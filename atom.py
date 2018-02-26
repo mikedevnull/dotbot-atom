@@ -62,10 +62,11 @@ class Atom(dotbot.Plugin):
             self._packages = _apm_get_installed_packages()
 
     def _check_apm(self):
-        with open('/dev/null', 'w') as devnull:
-            returncode = subprocess.call(
-                ['apm', '-v'], stdout=devnull, stderr=devnull)
-        if returncode != 0:
+        try:
+            with open('/dev/null', 'w') as devnull:
+                subprocess.check_call(['apm', '-v'], stdout=devnull,
+                                      stderr=devnull)
+        except Exception:
             self._log.error("Atom package manager not usable: "
                             "Failed to run 'apm' command")
             raise RuntimeError('Failed to run atom package manger (apm)')
